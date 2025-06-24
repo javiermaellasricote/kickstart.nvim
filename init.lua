@@ -101,6 +101,9 @@ vim.g.have_nerd_font = false
 vim.o.foldenable = true
 vim.o.foldmethod = 'indent'
 
+vim.o.smartindent = true
+vim.o.autoindent = true
+
 -- Make line numbers default
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -252,6 +255,7 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-obsession',
+  'ruanyl/vim-gh-line',
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -286,6 +290,13 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+  },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equivalent to setup({}) function
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
