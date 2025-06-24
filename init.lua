@@ -98,6 +98,9 @@ vim.g.have_nerd_font = false
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+vim.o.foldenable = true
+vim.o.foldmethod = 'indent'
+
 -- Make line numbers default
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -150,7 +153,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '» ', trail = '•', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
