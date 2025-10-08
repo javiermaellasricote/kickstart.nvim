@@ -742,6 +742,7 @@ require('lazy').setup({
         'black',
         'biome',
         'buildifier',
+        'buf',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -783,7 +784,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, proto = true }
+        local disable_filetypes = { c = true, cpp = true, proto = true, python = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -794,14 +795,14 @@ require('lazy').setup({
         end
       end,
       formatters_by_ft = {
-        lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { 'black' },
-        --
         -- You can use 'stop_after_first' to run the first available formatter from the list
+        lua = { 'stylua' },
+        python = { 'black' },
         typescript = { 'biome' },
         javascript = { 'biome' },
         bzl = { 'buildifier' },
+        proto = { 'buf' },
       },
     },
   },
