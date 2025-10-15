@@ -803,6 +803,7 @@ require('lazy').setup({
         javascript = { 'biome' },
         bzl = { 'buildifier' },
         proto = { 'buf' },
+        go = { 'gofmt' },
       },
     },
   },
