@@ -165,7 +165,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 99999
+vim.o.scrolloff = 999
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -295,8 +295,11 @@ require('lazy').setup({
     'windwp/nvim-autopairs',
     event = 'InsertEnter',
     config = true,
-    -- use opts = {} for passing setup options
-    -- this is equivalent to setup({}) function
+  },
+  {
+    'windwp/nvim-ts-autotag',
+    event = 'InsertEnter',
+    opts = {},
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -691,13 +694,23 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        clangd = {},
-        gopls = {},
+        clangd = {
+          filetypes = { 'c', 'cpp', 'objc', 'objcpp', 'cuda' },
+        },
+        gopls = {
+          cmd = { 'dd-gopls' },
+          cmd_env = {
+            GOPLS_DISABLE_MODULE_LOADS = 0,
+            GOPROXY = 'binaries.ddbuild.io,https://proxy.golang.org,direct',
+          },
+        },
         pyright = {},
         rust_analyzer = {},
         starpls = {},
         dockerls = {},
         docker_compose_language_service = {},
+        cssls = {},
+        tailwindcss = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -740,9 +753,9 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'black',
-        'biome',
         'buildifier',
         'buf',
+        'prettier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -784,23 +797,36 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, proto = true, python = true }
+        local disable_filetypes = { c = true, cpp = true, python = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 2000,
             lsp_format = 'fallback',
           }
         end
       end,
+      formatters = {
+        oxfmt = {
+          command = 'oxfmt',
+          args = { '--stdin-filepath', '$FILENAME' },
+          stdin = true,
+        },
+      },
       formatters_by_ft = {
         -- Conform can also run multiple formatters sequentially
         -- You can use 'stop_after_first' to run the first available formatter from the list
         lua = { 'stylua' },
         python = { 'black' },
-        typescript = { 'biome' },
-        javascript = { 'biome' },
+        javascript = { 'oxfmt' },
+        javascriptreact = { 'oxfmt' },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        json = { 'prettier' },
+        css = { 'prettier' },
+        less = { 'prettier' },
+        markdown = { 'prettier' },
         bzl = { 'buildifier' },
         proto = { 'buf' },
         go = { 'gofmt' },
@@ -830,12 +856,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
         opts = {},
       },
@@ -975,7 +1001,23 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'tsx',
+        'css',
+        'typescript',
+        'javascript',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
