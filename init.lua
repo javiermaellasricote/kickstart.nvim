@@ -1007,22 +1007,24 @@ require('lazy').setup({
       require('nvim-treesitter').install {
         'bash',
         'c',
+        'css',
         'diff',
+        'gitcommit',
         'go',
         'gomod',
         'gosum',
         'html',
+        'javascript',
         'lua',
         'luadoc',
         'markdown',
         'markdown_inline',
+        'python',
         'query',
+        'tsx',
+        'typescript',
         'vim',
         'vimdoc',
-        'tsx',
-        'css',
-        'typescript',
-        'javascript',
       }
 
       -- Enable treesitter-based highlighting and indentation
