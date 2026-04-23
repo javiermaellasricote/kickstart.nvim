@@ -7,6 +7,10 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        yaml = { 'yamllint' },
+        dockerfile = { 'hadolint' },
+        sh = { 'shellcheck' },
+        bash = { 'shellcheck' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
