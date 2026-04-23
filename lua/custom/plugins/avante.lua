@@ -20,6 +20,8 @@ return {
         endpoint = 'https://api.anthropic.com',
         model = 'claude-opus-4-7',
         extra_request_body = {
+          -- Adaptive thinking requires temperature = 1 (or omitted); override Avante's 0.75 default.
+          temperature = 1,
           max_tokens = 128000,
           thinking = { type = 'adaptive', display = 'summarized' },
           output_config = { effort = 'max' },
