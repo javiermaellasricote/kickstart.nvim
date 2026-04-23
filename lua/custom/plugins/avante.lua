@@ -12,6 +12,8 @@ return {
     'nvim-telescope/telescope.nvim',
     'nvim-tree/nvim-web-devicons',
     'MeanderingProgrammer/render-markdown.nvim',
+    -- Supplies vim.ui.input / vim.ui.select backends; required by Avante's "dressing" input provider.
+    'stevearc/dressing.nvim',
   },
   opts = {
     provider = 'claude',
@@ -28,6 +30,9 @@ return {
         },
       },
     },
+    -- "native" provider mis-calls vim.ui.select and also can't handle concealed input;
+    -- dressing.nvim supplies both, and Avante's own warning recommends it for password prompts.
+    input = { provider = 'dressing' },
     behaviour = {
       auto_suggestions = false,
       auto_apply_diff_after_generation = false,
