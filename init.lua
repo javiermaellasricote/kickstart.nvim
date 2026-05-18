@@ -225,6 +225,32 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- [[ Filetype overrides ]]
+-- Several common config files are technically `.json` but allow `//` and `/* */`
+-- comments. Treat them as `jsonc` so the LSP and formatter don't flag the
+-- comments as errors.
+vim.filetype.add {
+  extension = {
+    jsonc = 'jsonc',
+  },
+  filename = {
+    ['.babelrc'] = 'jsonc',
+    ['.eslintrc'] = 'jsonc',
+    ['.hintrc'] = 'jsonc',
+    ['.jsfmtrc'] = 'jsonc',
+    ['.jshintrc'] = 'jsonc',
+    ['.parcelrc'] = 'jsonc',
+    ['.swcrc'] = 'jsonc',
+  },
+  pattern = {
+    ['.*/%.vscode/.*%.json'] = 'jsonc',
+    ['.*%.code%-snippets'] = 'jsonc',
+    ['.*%.code%-workspace'] = 'jsonc',
+    ['jsconfig.*%.json'] = 'jsonc',
+    ['tsconfig.*%.json'] = 'jsonc',
+  },
+}
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -514,6 +540,11 @@ require('lazy').setup({
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
+
+      -- JSON/YAML schema definitions used by `jsonls` (and friends) so files
+      -- like `tsconfig.json`, `package.json`, GitHub workflows, etc. get
+      -- validation and completion out of the box.
+      'b0o/SchemaStore.nvim',
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -728,11 +759,16 @@ require('lazy').setup({
           },
         },
         jsonls = {
+          filetypes = { 'json', 'jsonc' },
           settings = {
             json = {
+              schemas = require('schemastore').json.schemas(),
               validate = { enable = true },
             },
           },
+        },
+        autotools_ls = {
+          filetypes = { 'make', 'automake', 'config' },
         },
         taplo = {},
         fish_lsp = {},
@@ -787,6 +823,7 @@ require('lazy').setup({
         'yamlfmt',
         'yamllint',
         'markdownlint',
+        'checkmake',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -828,7 +865,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true, python = true, proto = true }
+        local disable_filetypes = { c = true, cpp = true, python = true, proto = true, yaml = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -1062,6 +1099,7 @@ require('lazy').setup({
         'jsonc',
         'lua',
         'luadoc',
+        'make',
         'markdown',
         'markdown_inline',
         'proto',
