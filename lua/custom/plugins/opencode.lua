@@ -23,15 +23,21 @@ return {
           end
         end,
       },
-      -- Server configuration to ensure proper connection
+      -- Server configuration for workmux worktree workflow.
+      -- opencode is launched by workmux (with --port) in a dedicated pane for
+      -- each worktree. Discovery automatically picks the server whose CWD
+      -- matches Neovim's CWD, so the right opencode session is always targeted
+      -- without any manual selection.
       server = {
-        -- Let opencode.nvim find the running server automatically
+        -- nil: use built-in CWD-based process discovery (pgrep + lsof).
+        -- Each worktree's opencode reports its own CWD via GET /path, so the
+        -- plugin auto-selects the one matching vim.fn.getcwd().
         url = nil,
-        -- Start options for embedded terminal
-        start = {
-          cmd = "opencode",
-          args = { "--port" },
-        },
+        -- No-op function: do NOT spawn opencode from inside Neovim (opencode is
+        -- managed by workmux). Returning without error lets the plugin's built-in
+        -- poll() retry discovery for up to 5 seconds, which handles the race
+        -- where Neovim opens before the workmux pane finishes launching opencode.
+        start = function() end,
       },
     }
 
