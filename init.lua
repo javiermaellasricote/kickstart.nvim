@@ -901,7 +901,7 @@ require('lazy').setup({
         rust = { 'rustfmt', lsp_format = 'fallback' },
         css = { 'prettier' },
         less = { 'prettier' },
-        markdown = { 'prettier' },
+        -- markdown = { 'prettier' },
         bzl = { 'buildifier' },
         -- proto = { 'buf' },
         go = { 'gofmt' },
@@ -1057,12 +1057,12 @@ require('lazy').setup({
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
       statusline.setup { use_icons = vim.g.have_nerd_font }
-      
+
       -- Override the entire statusline active content to include OpenCode
       local original_active = statusline.active
       statusline.active = function()
         local result = original_active()
-        
+
         -- Try to get OpenCode status and append it (with error protection)
         local ok, opencode = pcall(require, 'opencode')
         if ok and opencode.statusline then
@@ -1076,22 +1076,22 @@ require('lazy').setup({
             local pos = 0
             while true do
               pos = string.find(result, pattern, pos + 1, true)
-              if not pos then break end
+              if not pos then
+                break
+              end
               last_pos = pos
             end
-            
+
             if last_pos > 0 then
               -- Insert OpenCode status before the last mode section (location)
-              result = result:sub(1, last_pos - 1) .. 
-                       '%#DiffAdd#' .. ' 🤖 ' .. status .. ' ' .. 
-                       result:sub(last_pos)
+              result = result:sub(1, last_pos - 1) .. '%#DiffAdd#' .. ' 🤖 ' .. status .. ' ' .. result:sub(last_pos)
             else
               -- Fallback: append to the end
               result = result .. '%#DiffAdd# 🤖 ' .. status
             end
           end
         end
-        
+
         return result
       end
 
