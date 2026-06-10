@@ -69,7 +69,7 @@ return {
       },
       file_panel = {
         -- The `file_panel` bindings are active in the file panel
-        { 'n', '<cr>', '<cmd>.DiffviewOpen<cr>', { desc = 'Open diff for file' } },
+        -- <cr>, o, and l open the diff for the selected entry (diffview defaults)
         { 'n', '<tab>', '<cmd>DiffviewToggleFiles<cr>', { desc = 'Toggle file panel' } },
         { 'n', 'q', '<cmd>DiffviewClose<cr>', { desc = 'Close diffview' } },
       },
